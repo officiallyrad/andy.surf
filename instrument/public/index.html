@@ -640,26 +640,26 @@
 // Upload file to server
     
     async function uploadFile(file) {
-    const formData = new FormData();
-    formData.append('sample', file);
+      const formData = new FormData();
+      formData.append('sample', file);
     
-    try {
-        const response = await fetch('/instrument/upload', {
-            method: 'POST',
-            body: formData
-        });
-    
-        if (response.ok) {
-            const data = await response.json();
-            console.log('File uploaded successfully:', data.filePath);
-            // Load the uploaded file into the Tone.js app
-        } else {
-            console.error('File upload failed:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error:', error);
+      try {
+          const response = await fetch('/instrument/upload', {
+              method: 'POST',
+              body: formData
+          });
+      
+          if (response.ok) {
+              const data = await response.json();
+              console.log('File uploaded successfully:', data.filePath);
+              // Load the uploaded file into the Tone.js app
+          } else {
+              console.error('File upload failed:', response.statusText);
+          }
+      } catch (error) {
+          console.error('Error:', error);
+      }
     }
-
 
   async function loadSample(filePath) {
     try {
