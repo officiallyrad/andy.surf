@@ -638,26 +638,26 @@
   });
 
 // Upload file to server
-  function uploadFile(file) {
+    
+    async function uploadFile(file) {
     const formData = new FormData();
-    const fileInput = file;
     formData.append('sample', file);
-  
-    fetch('instrument/upload', {
-      method: 'POST',
-      body: formData
-    })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          console.log('File uploaded successfully:', data.filePath);
-          // Load the uploaded file into the Tone.js app
-          loadSample(data.filePath);
+    
+    try {
+        const response = await fetch('/instrument/upload', {
+            method: 'POST',
+            body: formData
+        });
+    
+        if (response.ok) {
+            const data = await response.json();
+            console.log('File uploaded successfully:', data.filePath);
+            // Load the uploaded file into the Tone.js app
         } else {
-          console.error('File upload failed:', data.message);
+            console.error('File upload failed:', response.statusText);
         }
-      })
-    .catch(error => console.error('Error:', error));
+    } catch (error) {
+        console.error('Error:', error);
     }
 
 
