@@ -307,7 +307,7 @@
   <div class="samples">
     <!-- Left Column: Selected Sample Preview -->
     <div class="samples-left-column" id="selected-sample-column">
-      <img id="selected-sample-image" class="selected-sample-image" src="./images/instrument.png" alt="Selected Sample">
+      <img id="selected-sample-image" class="selected-sample-image" src="https://andy.surf/instrument/images/instrument.png" alt="Selected Sample">
       <div id="selected-sample-name" class="selected-sample-name">Select a sample</div>
       <div id="selected-sample-meta" class="selected-sample-meta">Experimental</div>
     </div>
@@ -620,7 +620,7 @@
   
     const file = e.dataTransfer.files[0];
     if (file && (file.type === 'audio/wav' || file.type === 'audio/mp3')) {
-      loadSample(file);
+      uploadFile(file);
     } else {
       dropZone.textContent = 'Unsupported file type. Please use WAV or MP3 files.';
     }
@@ -631,7 +631,7 @@
     const file = e.target.files[0];
     if (file && (file.type === 'audio/wav' || file.type === 'audio/mp3')) {
       dropZone.textContent = 'Processing sample...';
-      loadSample(file);
+      uploadFile(file);
     } else {
       dropZone.textContent = 'Unsupported file type. Please use WAV or MP3 files.';
     }
@@ -718,7 +718,7 @@
           }
 
           // Create a new player for this sample and play it
-          currentPlayer = new Tone.Player(`./samples/${sampleName}`, () => {
+          currentPlayer = new Tone.Player(`https://andy.surf/instrument/samples/${sampleName}`, () => {
             currentPlayer.start();
             playButton.dataset.playing = "true";
             playButton.textContent = '⏸︎'; // Change to pause icon
@@ -745,7 +745,7 @@
           selectedSampleImage.src = imageSrc;
           selectedSampleName.textContent = sampleName;
           selectedSampleMeta.textContent = sampleMeta;
-          const selectedSample = `./samples/${sampleName}`;
+          const selectedSample = `https://andy.surf/instrument/samples/${sampleName}`;
         
             // Load sample through standard function - ANDY TO FIX
            // loadSample(`./samples/${sampleName}`);
