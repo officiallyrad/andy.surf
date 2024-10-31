@@ -54,6 +54,8 @@ app.post('/upload', upload.single('sample'), (req, res) => {
 
 // Serve the 'uploads' folder so that files can be accessed by the web app
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/instrument', express.static('public'));  // Serve static files from the 'public' folder for /instrument
+
 
 // Start the server
 app.listen(PORT, () => {
