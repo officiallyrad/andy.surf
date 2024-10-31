@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web Audio + MIDI Instrument</title>
+  <script src="https://cdn.jsdelivr.net/npm/tone@14"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wavesurfer.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/wavesurfer.js/dist/plugin/wavesurfer.regions.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/nexusui@2.0.7/dist/NexusUI.min.js"></script>
+  <style>
+	body {
+	  background-color: #121212;
+	  color: #ffffff;
+	  font-family: 'Arial', sans-serif;
+	}
+
+	.ui-container {
+	  display: grid;
+	  grid-template-columns: 1fr 2fr;
+	  gap: 20px;
+	  padding: 20px;
+	}
+
+	.sample-card {
+	  background-color: #1e1e1e;
+	  padding: 20px;
+	  border-radius: 10px;
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	}
+
+	.sample-image {
+	  width: 100%;
+	  height: auto;
+	  border-radius: 8px;
+	}
+
+	.sample-info h3 {
+	  margin: 15px 0 5px;
+	  font-size: 20px;
+	}
+
+	.sample-info p {
+	  margin: 5px 0 15px;
+	  font-size: 14px;
+	  color: #bbbbbb;
+	}
+
+	.sample-tags .tag {
+	  display: inline-block;
+	  padding: 5px 10px;
+	  margin: 5px;
+	  background-color: #333;
+	  border-radius: 15px;
+	  font-size: 12px;
+	}
+
+	.effects-grid {
+	  display: grid;
+	  grid-template-columns: repeat(3, 1fr);
+	  gap: 20px;
+	}
+
+	.effect-card {
+	  background-color: #1e1e1e;
+	  border-radius: 10px;
+	  padding: 20px;
+	  position: relative;
+	}
+
+	.effect-header {
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  font-size: 18px;
+	}
+
+	.effect-name {
+	  color: #00e0e0;
+	}
+
+	.effect-card canvas {
+	  margin-top: 20px;
+	  width: 100%;
+	  height: 120px;
+	  background-color: #000;
+	  border-radius: 10px;
+	}
+
+	.additional-controls {
+	  grid-column: span 2;
+	  display: flex;
+	  justify-content: space-around;
+	  padding: 20px;
+	  background-color: #1e1e1e;
+	  border-radius: 10px;
+	}
+
+	.knob-container {
+	  display: flex;
+	  gap: 20px;
+	}
+
+	.knob-wrapper {
+	  display: flex;
+	  flex-direction: column;
+	  align-items: center;
+	}
+
+	.knob-label {
+	  margin-top: 10px;
+	  font-size: 14px;
+	  color: #ffffff;
+	}
+  </style>
+</head>
+<body>
+
+  <div class="ui-container">
+	<!-- Sample Card -->
+	<div class="sample-card">
+	  <img id="selected-sample-image" class="sample-image" src="https://splice-res.cloudinary.com/image/upload/q_auto/f_auto/c_fit,h_72/dpr_1.0/v1635183099/1635183093.jpg" alt="Sample Art">
+	  <div class="sample-info">
+		<h3 id="selected-sample-name">SO_AU_120_pad_loop</h3>
+		<p>CONVERTED TO INSTRUMENT</p>
+		<div class="sample-tags">
+		  <span class="tag">keys</span>
+		  <span class="tag">electric piano</span>
+		  <span class="tag">smooth</span>
+		</div>
+	  </div>
+	</div>
+
+	<!-- Effects Section -->
+	<div class="effects-grid">
+	  <div class="effect-card">
+		<div class="effect-header">
+		  <span class="effect-name">Filter</span>
+		</div>
+		<canvas id="filter-visualization"></canvas>
+	  </div>
+	  <div class="effect-card">
+		<div class="effect-header">
+		  <span class="effect-name">Reverb</span>
+		  <select id="reverb-select">
+			<option>Dark Hall</option>
+			<option>Bright Room</option>
+		  </select>
+		</div>
+		<canvas id="reverb-visualization"></canvas>
+	  </div>
+	  <div class="effect-card">
+		<div class="effect-header">
+		  <span class="effect-name">Delay</span>
+		</div>
+		<canvas id="delay-visualization"></canvas>
+	  </div>
+	</div>
+
+	<!-- Additional Controls -->
+	<div class="additional-controls">
+	  <div class="knob-wrapper">
+		<div id="envelope-knob" class="knob"></div>
+		<label class="knob-label">Envelope</label>
+	  </div>
+	  <div class="knob-wrapper">
+		<div id="wave-knob" class="knob"></div>
+		<label class="knob-label">Wave</label>
+	  </div>
+	  <div class="knob-wrapper">
+		<div id="expand-knob" class="knob"></div>
+		<label class="knob-label">Expand</label>
+	  </div>
+	  <div class="knob-wrapper">
+		<div id="nostalgia-knob" class="knob"></div>
+		<label class="knob-label">Nostalgia</label>
+	  </div>
+	</div>
+  </div>
+
+  <script>
+	// Initialize Nexus UI Knobs
+	const envelopeKnob = new Nexus.Dial('#envelope-knob', {
+	  size: [60, 60],
+	  min: 0,
+	  max: 100,
+	  value: 50
+	});
+
+	const waveKnob = new Nexus.Dial('#wave-knob', {
+	  size: [60, 60],
+	  min: 0,
+	  max: 10,
+	  value: 5
+	});
+
+	const expandKnob = new Nexus.Dial('#expand-knob', {
+	  size: [60, 60],
+	  min: 0,
+	  max: 100,
+	  value: 75
+	});
+
+	const nostalgiaKnob = new Nexus.Dial('#nostalgia-knob', {
+	  size: [60, 60],
+	  min: 0,
+	  max: 100,
+	  value: 60
+	});
+
+	// Tone.js context resume on user interaction
+	document.body.addEventListener('click', () => {
+	  if (Tone.context.state !== 'running') {
+		Tone.context.resume().then(() => {
+		  console.log('Audio context resumed');
+		});
+	  }
+	});
+  </script>
+
+</body>
+</html>
