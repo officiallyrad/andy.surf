@@ -199,6 +199,8 @@
       display: flex;
       align-items: center;
       margin-right: 20px;
+      font-size: 14px;
+      color: #fff;
     }
 
     .sustain-control input[type="range"] {
@@ -232,58 +234,58 @@
     
 
 
-    .piano-container {
-  width: 100%;
-  position: relative; /* Ensure relative positioning for child elements */
-  bottom: 0;
-  left: 0;
-  height: 300px; /* Adjusted height to include space for both effects and keys */
-  background-color: #333;
-  display: flex;
-  flex-direction: column; /* Arrange children in a column */
-}
+  .piano-container {
+    width: 100%;
+    position: fixed; /* Ensure relative positioning for child elements */
+    bottom: 0;
+    left: 0;
+    height: 400px; /* Adjusted height to include space for both effects and keys */
+    background-color: #121212;
+    display: flex;
+    flex-direction: column; /* Arrange children in a column */
+  }
+  
+  
+  #piano {
+    display: flex;
+    width: 95%;
+    height: calc(100% - 80px); /* Ensure there is enough space for both piano keys and effects rack */
+    position: relative;
+    margin: auto;
+    bottom: 0;
+  }
+  
+      .key {
+    position: relative; /* This keeps the white keys positioned properly */
+    width: 4%;
+    height: 100%;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+  
+  .white-key {
+    background-color: #fff;
+    z-index: 1; /* Ensure white keys are below black keys */
+  }
+  
+  .black-key {
+    background-color: black;
+    width: 2.5%; /* This value can be adjusted if necessary */
+    height: 60%;
+    position: absolute; /* Position them relative to their container */
+    z-index: 2; /* Keep them above white keys */
+    transform: translateX(-50%);
+    border-radius: 0 0 5px 5px; /* Optional: Add rounded corners at the bottom for aesthetics */
+    margin-left: 0.5%; /* Add a small margin to ensure separation */
+  }
 
-
-#piano {
-  display: flex;
-  width: 95%;
-  height: calc(100% - 80px); /* Ensure there is enough space for both piano keys and effects rack */
-  position: relative;
-  margin: auto;
-  bottom: 0;
-}
-
-    .key {
-  position: relative; /* This keeps the white keys positioned properly */
-  width: 4%;
-  height: 100%;
-  border: 1px solid #000;
-  box-sizing: border-box;
-  cursor: pointer;
-}
-
-.white-key {
-  background-color: #fff;
-  z-index: 1; /* Ensure white keys are below black keys */
-}
-
-.black-key {
-  background-color: black;
-  width: 2.5%; /* This value can be adjusted if necessary */
-  height: 60%;
-  position: absolute; /* Position them relative to their container */
-  z-index: 2; /* Keep them above white keys */
-  transform: translateX(-50%);
-  border-radius: 0 0 5px 5px; /* Optional: Add rounded corners at the bottom for aesthetics */
-  margin-left: 0.5%; /* Add a small margin to ensure separation */
-}
-
-    .key.active {
-      background-color: blue !important;
-      transition: background-color 0.1s ease;
-    }
+  .key.active {
+    background-color: blue !important;
+    transition: background-color 0.1s ease;
+  }
     
-    .slicer-highlight {
+  .slicer-highlight {
   background-color: rgba(0, 0, 0, 0.414); /* Orange color overlay to indicate slice */
   transition: background-color 0.2s ease;
 }
@@ -357,6 +359,18 @@
           <button class="play-button" data-playing="false">►</button>
         </div>
       </div>
+      <div class="sample-row" data-sample="MO_AGTH_vocal_cities_minor_gary.wav" data-image="https://splice-res.cloudinary.com/image/upload/f_auto,q_auto,w_auto/c_limit,w_450/v1663344597/s3ssxyjuydxe80mmk9jq.jpg" data-name="MO_AGTH_vocal_cities_minor_gary" data-meta="Loop • live • guitar • acoustic • country">
+        <div class="sample-image">
+          <img src="https://splice-res.cloudinary.com/image/upload/f_auto,q_auto,w_auto/c_limit,w_450/v1663344597/s3ssxyjuydxe80mmk9jq.jpg" alt="Album Art">
+        </div>
+        <div class="sample-details">
+          <div class="sample-name">CMO_AGTH_vocal_cities_minor_gary</div>
+          <div class="sample-meta">Ome-Shot • vocals • male • meme </div>
+        </div>
+        <div class="sample-controls">
+          <button class="play-button" data-playing="false">►</button>
+        </div>
+      </div>
       
       <!-- Synths for testing -->
       <select id="synth-dropdown">
@@ -369,15 +383,15 @@
     </div>
   </div>
 
-<div class="mode-toggle-container" id="mode-toggle-container">
-    <div class="toggle" id="mode-toggle">
-      <div class="toggle-option active" data-mode="chromatic">Keys</div>
-      <div class="toggle-option" data-mode="slicer">Slicer</div>
-    </div>
-  </div>
 
 
  <div class="piano-container">
+   <div class="mode-toggle-container" id="mode-toggle-container">
+     <div class="toggle" id="mode-toggle">
+       <div class="toggle-option active" data-mode="chromatic">Keys</div>
+       <div class="toggle-option" data-mode="slicer">Slicer</div>
+     </div>
+   </div>
   <div class="effects-rack">
  
     <div class="panel">
@@ -393,7 +407,7 @@
         <div id="waveform"></div>
       </div>
       <div class="sustain-control">
-        <label for="sustain">Trim:</label>
+        <label for="sustain">Playback duration:</label>
         <input type="range" id="sustain" min="0.1" max="5" step="0.1" value="1">
       </div>
     </div>
@@ -426,8 +440,8 @@
     const controlPanel = document.getElementById('control-panel');
     
     // URL routing to handle local vs remote access
-    // const contentURL = '.';
-    const contentURL = 'https://andy.surf';
+    const contentURL = '.';
+    //const contentURL = 'https://andy.surf';
     
 
     let waveSurfer = WaveSurfer.create({
@@ -612,115 +626,6 @@
       keys.forEach(key => key.classList.remove('slicer-highlight'));
     }
 
-  // Custom Sample Upload Features
-  // Drop Zone Functionality
-  const dropZone = document.getElementById('drop-zone');
-  const fileInput = document.getElementById('file-input');
-
-  // Add file click event
-  dropZone.addEventListener('click', () => {
-    fileInput.click();
-  });
-
-  // Handle drag events
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('dragging');
-    dropZone.style.borderColor = '#fff';
-    dropZone.textContent = 'Release to upload your sample';
-  });
-
-  dropZone.addEventListener('dragleave', () => {
-    dropZone.classList.remove('dragging');
-    dropZone.style.borderColor = '#888';
-    dropZone.textContent = 'Drop your sample here';
-  });
-
-  // Handle file drop event
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('dragging');
-    dropZone.style.borderColor = '#888';
-    dropZone.textContent = 'Processing sample...';
-  
-    const file = e.dataTransfer.files[0];
-    if (file && (file.type === 'audio/wav' || file.type === 'audio/mp3')) {
-      uploadFile(file);
-    } else {
-      dropZone.textContent = 'Unsupported file type. Please use WAV or MP3 files.';
-    }
-  });
-
-  // Handle file input change when using Finder
-  fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file && (file.type === 'audio/wav' || file.type === 'audio/mp3')) {
-      dropZone.textContent = 'Processing sample...';
-      uploadFile(file);
-    } else {
-      dropZone.textContent = 'Unsupported file type. Please use WAV or MP3 files.';
-    }
-  });
-
-// Upload file to server
-    
-    async function uploadFile(file) {
-      const formData = new FormData();
-      formData.append('sample', file);
-    
-      try {
-          const response = await fetch('/instrument/upload', {
-              method: 'POST',
-              body: formData
-          });
-      
-          if (response.ok) {
-              const data = await response.json();
-              console.log('File uploaded successfully:', data.filePath);
-              // Load the uploaded file into the Tone.js app
-              loadSample(data.filePath);
-          } else {
-              console.error('File upload failed:', response.statusText);
-          }
-      } catch (error) {
-          console.error('Error:', error);
-      }
-    }
-
-  async function loadSample(filePath) {
-    try {
-      const response = await fetch(filePath);
-      const arrayBuffer = await response.arrayBuffer();
-      const audioBuffer = await Tone.context.decodeAudioData(arrayBuffer);
-      
-      // Reset all effects before loading the new sample
-      resetEffects();
-      
-      if (currentMode === 'chromatic') {
-        // Load sample as a chromatic instrument
-        sampler = new Tone.Sampler({
-          C4: audioBuffer
-        }).chain(filter, delay, reverb).toDestination();
-        currentInstrument = sampler;
-        console.log(`Loaded sample in Chromatic mode:`, filePath);
-      } else if (currentMode === 'slicer') {
-        // Load sample and slice it into beats for Slicer mode
-        const slicedSamples = await createSlicedSamples(audioBuffer);
-        sampler = new Tone.Sampler(slicedSamples).toDestination();
-        currentInstrument = sampler;
-        console.log(`Loaded sample in Slicer mode:`, filePath);
-      }
-      
-      // Load waveform using WaveSurfer
-      waveSurfer.load(filePath);
-  
-      
-    } catch (error) {
-      console.error('Error loading sample into Tone.js:', error);
-    }
-  }
-  
-
     // Sample Preview Play Logic
     const sampleRows = document.querySelectorAll('.sample-row');
     // Update selected sample preview when a sample is clicked
@@ -768,36 +673,157 @@
 
       // Handle row click to load sample into the instrument
       row.addEventListener('click', async (e) => {
-        if (!e.target.classList.contains('play-button')) {
-          selectedSampleImage.src = imageSrc;
-          selectedSampleName.textContent = sampleName;
-          selectedSampleMeta.textContent = sampleMeta;
-          const selectedSample = `${contentURL}/instrument/samples/${sampleName}`;
-        
-            // Reset all effects before loading the new sample
-            resetEffects();
-            
-            if (currentMode === 'chromatic') {
-              // Load sample as a chromatic instrument
-              sampler = new Tone.Sampler({
-                C4: selectedSample
-              }).toDestination();
-              currentInstrument = sampler;
-              console.log(`Loaded sample in Chromatic mode:`, selectedSample);
-            } else if (currentMode === 'slicer') {
-              // Load sample and slice it into beats for Slicer mode
-              const slicedSamples = await createSlicedSamples(selectedSample);
-              sampler = new Tone.Sampler(slicedSamples).toDestination();
-              currentInstrument = sampler;
-              console.log(`Loaded sample in Slicer mode:`, selectedSample);
-            }
-            
-            // Load waveform using WaveSurfer
-            waveSurfer.load(selectedSample);
-        }
+          if (!e.target.classList.contains('play-button')) {
+              selectedSampleImage.src = imageSrc;
+              selectedSampleName.textContent = sampleName;
+              selectedSampleMeta.textContent = sampleMeta;
+              const selectedSample = `${contentURL}/instrument/samples/${sampleName}`;
+      
+              // Stop and dispose the current player if it exists
+              if (currentPlayer) {
+                  currentPlayer.stop();
+                  currentPlayer.dispose();
+                  currentPlayer = null;
+              }
+      
+              // Reset all effects before loading the new sample
+              resetEffects();
+      
+              if (currentMode === 'chromatic') {
+                  // Load sample as a chromatic instrument
+                  sampler = new Tone.Sampler({
+                      C4: selectedSample
+                  }).toDestination();
+                  currentInstrument = sampler;
+                  console.log(`Loaded sample in Chromatic mode:`, selectedSample);
+              } else if (currentMode === 'slicer') {
+                  // Load sample and slice it into beats for Slicer mode
+                  const slicedSamples = await createSlicedSamples(selectedSample);
+                  sampler = new Tone.Sampler(slicedSamples).toDestination();
+                  currentInstrument = sampler;
+                  console.log(`Loaded sample in Slicer mode:`, selectedSample);
+              }
+      
+              // Load waveform using WaveSurfer
+              waveSurfer.load(selectedSample);
+          }
       });
+
     });
     
+    // Custom Sample Upload Features
+      // Drop Zone Functionality
+      const dropZone = document.getElementById('drop-zone');
+      const fileInput = document.getElementById('file-input');
+    
+      // Add file click event
+      dropZone.addEventListener('click', () => {
+        fileInput.click();
+      });
+    
+      // Handle drag events
+      dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragging');
+        dropZone.style.borderColor = '#fff';
+        dropZone.textContent = 'Release to upload your sample';
+      });
+    
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragging');
+        dropZone.style.borderColor = '#888';
+        dropZone.textContent = 'Drop your sample here';
+      });
+    
+      // Handle file drop event
+      dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragging');
+        dropZone.style.borderColor = '#888';
+        dropZone.textContent = 'Processing sample...';
+      
+        const file = e.dataTransfer.files[0];
+        if (file && (file.type === 'audio/wav' || file.type === 'audio/mp3')) {
+          uploadFile(file);
+        } else {
+          dropZone.textContent = 'Unsupported file type. Please use WAV or MP3 files.';
+        }
+      });
+    
+      // Handle file input change when using Finder
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file && (file.type === 'audio/wav' || file.type === 'audio/mp3')) {
+          dropZone.textContent = 'Processing sample...';
+          uploadFile(file);
+        } else {
+          dropZone.textContent = 'Unsupported file type. Please use WAV or MP3 files.';
+        }
+      });
+    
+    // Upload file to server
+        
+        async function uploadFile(file) {
+          const formData = new FormData();
+          formData.append('sample', file);
+        
+          try {
+              const response = await fetch('/instrument/upload', {
+                  method: 'POST',
+                  body: formData
+              });
+          
+              if (response.ok) {
+                  const data = await response.json();
+                  console.log('File uploaded successfully:', data.filePath);
+                  // Load the uploaded file into the Tone.js app
+                  loadSample(data.filePath);
+              } else {
+                  console.error('File upload failed:', response.statusText);
+              }
+          } catch (error) {
+              console.error('Error:', error);
+          }
+        }
+    
+      async function loadSample(filePath) {
+        try {
+          const response = await fetch(filePath);
+          const arrayBuffer = await response.arrayBuffer();
+          const audioBuffer = await Tone.context.decodeAudioData(arrayBuffer);
+      
+          // Reset all effects before loading the new sample
+          resetEffects();
+      
+          // Dispose of any existing sampler if present
+          if (sampler) {
+            sampler.dispose();
+            sampler = null;
+          }
+      
+          if (currentMode === 'chromatic') {
+            // Load sample as a chromatic instrument
+            sampler = new Tone.Sampler({
+              C4: audioBuffer
+            }).toDestination();
+            currentInstrument = sampler;
+            console.log(`Loaded sample in Chromatic mode:`, filePath);
+          } else if (currentMode === 'slicer') {
+            // Load sample and slice it into beats for Slicer mode
+            const slicedSamples = await createSlicedSamples(audioBuffer);
+            sampler = new Tone.Sampler(slicedSamples).toDestination();
+            currentInstrument = sampler;
+            console.log(`Loaded sample in Slicer mode:`, filePath);
+          }
+      
+          // Load waveform using WaveSurfer
+          waveSurfer.load(filePath);
+      
+        } catch (error) {
+          console.error('Error loading sample into Tone.js:', error);
+        }
+      }
+
   
 
     // create sliced samples and map to piano keys

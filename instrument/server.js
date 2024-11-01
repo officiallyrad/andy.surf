@@ -12,9 +12,6 @@ const PORT = 3000;
 // Enable CORS to allow requests from the frontend
 app.use(cors());
 
-// Allow requests from localhost and Andy.surf
-const allowedOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://andy.surf'];
-
 // Set up storage engine for multer to save files to 'uploads' directory
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -64,6 +61,3 @@ app.use('/instrument', express.static('public'));  // Serve static files from th
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-
-curl -X POST -F "sample=@/Users/andythompson/Downloads/MO_AGTH_vocal_cities_minor_gary.wav" http://localhost:3000/upload
