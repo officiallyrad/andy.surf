@@ -425,6 +425,10 @@
        
     const controlPanel = document.getElementById('control-panel');
     
+    // URL routing to handle local vs remote access
+    const contentURL = '.';
+    //const contentURL = 'https://andy.surf';
+    
 
     let waveSurfer = WaveSurfer.create({
       container: '#waveform',
@@ -541,6 +545,25 @@
       spicy: { oscillator: { type: 'square' }, envelope: { attack: 0.1, decay: 0.3 } },
       dreamy: { oscillator: { type: 'triangle' }, envelope: { attack: 0.5, release: 1 } }
     };
+    
+    
+    function resetEffects() {
+      if (reverb) {
+        reverb.decay = 0.001;
+        reverb.wet.value = 0;
+      }
+    
+      if (delay) {
+        delay.delayTime.value = 0;
+        delay.feedback.value = 0;
+        delay.wet.value = 0;
+      }
+    
+      if (filter) {
+        filter.frequency.value = 20000;  // Set to a high value for minimal effect
+        filter.wet && (filter.wet.value = 0);  // Ensure wet parameter exists
+      }
+    }
 
     document.getElementById('synth-dropdown').addEventListener('change', (e) => {
       const preset = synthPresets[e.target.value];
@@ -655,6 +678,7 @@
               const data = await response.json();
               console.log('File uploaded successfully:', data.filePath);
               // Load the uploaded file into the Tone.js app
+              loadSample(data.filePath);
           } else {
               console.error('File upload failed:', response.statusText);
           }
@@ -669,7 +693,8 @@
       const arrayBuffer = await response.arrayBuffer();
       const audioBuffer = await Tone.context.decodeAudioData(arrayBuffer);
       
-  
+      // Reset all effects before loading the new sample
+      resetEffects();
       
       if (currentMode === 'chromatic') {
         // Load sample as a chromatic instrument
@@ -720,7 +745,7 @@
           }
 
           // Create a new player for this sample and play it
-          currentPlayer = new Tone.Player(`https://andy.surf/instrument/samples/${sampleName}`, () => {
+          currentPlayer = new Tone.Player(`${contentURL}/instrument/samples/${sampleName}`, () => {
             currentPlayer.start();
             playButton.dataset.playing = "true";
             playButton.textContent = '⏸︎'; // Change to pause icon
@@ -747,16 +772,16 @@
           selectedSampleImage.src = imageSrc;
           selectedSampleName.textContent = sampleName;
           selectedSampleMeta.textContent = sampleMeta;
-          const selectedSample = `https://andy.surf/instrument/samples/${sampleName}`;
+          const selectedSample = `${contentURL}/instrument/samples/${sampleName}`;
         
-            // Load sample through standard function - ANDY TO FIX
-           // loadSample(`./samples/${sampleName}`);
+            // Reset all effects before loading the new sample
+            resetEffects();
             
             if (currentMode === 'chromatic') {
               // Load sample as a chromatic instrument
               sampler = new Tone.Sampler({
                 C4: selectedSample
-              }).chain(filter, delay, reverb).toDestination();
+              }).toDestination();
               currentInstrument = sampler;
               console.log(`Loaded sample in Chromatic mode:`, selectedSample);
             } else if (currentMode === 'slicer') {
@@ -775,7 +800,7 @@
     
   
 
-    // Function to create sliced samples and map to piano keys
+    // create sliced samples and map to piano keys
     async function createSlicedSamples(sampleUrl) {
       const slicedSamples = {};
       const buffer = await Tone.Buffer.fromUrl(sampleUrl);
@@ -799,7 +824,7 @@
       return slicedSamples;
     }
     
-    // Function to handle Slicer mode loading
+    // handle Slicer mode loading
     async function loadSampleInSlicerMode(sampleUrl) {
       const slicedSamples = await createSlicedSamples(sampleUrl);
       sampler = new Tone.Sampler(slicedSamples).toDestination();
@@ -887,23 +912,23 @@
    // Initialize Nexus UI Knobs
    const reverbKnob = new Nexus.Dial('#reverb-knob', {
     size: [100, 100],
-     min: 0,
+     min: 0.001,
      max: 10,
-     value: 5
+     value: 0
    });
    
    const delayKnob = new Nexus.Dial('#delay-knob', {
     size: [100, 100],
      min: 0,
      max: 10,
-     value: 5
+     value: 0
    });
    
    const filterKnob = new Nexus.Dial('#filter-knob', {
      size: [100, 100],
      min: 1,
      max: 100,
-     value: 10
+     value: 0
    });
    
   reverbKnob.colorize("accent","#333");
