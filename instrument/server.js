@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Endpoint to handle file uploads
 app.post('/upload', upload.single('sample'), (req, res) => {
   if (req.file) {
-    res.json({ success: true, message: 'File uploaded successfully!', filePath: `/uploads/${req.file.filename}` });
+    res.json({ success: true, message: 'File uploaded successfully!', filePath: `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` });
   } else {
     res.status(400).json({ success: false, message: 'File upload failed.' });
   }
