@@ -773,7 +773,7 @@
           const credentials = btoa(`${username}:${password}`);
         
           try {
-              const response = await fetch('/instrument/upload', {
+              const response = await fetch('/upload', {
                   method: 'POST',
                   body: formData,
                   headers: {
