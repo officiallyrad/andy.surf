@@ -44,7 +44,7 @@ const upload = multer({
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Endpoint to handle file uploads
-app.post('/instrument/upload', upload.single('sample'), (req, res) => {
+app.post('/upload', upload.single('sample'), (req, res) => {
   if (req.file) {
     res.json({ success: true, message: 'File uploaded successfully!', filePath: `/uploads/${req.file.filename}` });
   } else {
