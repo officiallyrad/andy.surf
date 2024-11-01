@@ -512,9 +512,9 @@
     const sustainControl = document.getElementById('sustain');
     
     // Create effects using Tone.js
-    const reverb = new Tone.Reverb({ decay: 3, wet: 0.5 }).toDestination();
-    const delay = new Tone.FeedbackDelay({ delayTime: 0.5, feedback: 0.5, wet: 0.3 }).toDestination();
-    const filter = new Tone.Filter({ type: 'lowpass', frequency: 1000, rolloff: -12 }).toDestination();
+    const reverb = new Tone.Reverb({ decay: 0.001, wet: 0 }).toDestination();
+    const delay = new Tone.FeedbackDelay({ delayTime: 0, feedback: 0, wet: 0 }).toDestination();
+    const filter = new Tone.Filter({ type: 'lowpass', frequency: 2000, rolloff: -12 }).toDestination();
 
 
 
@@ -699,7 +699,7 @@
               } else if (currentMode === 'slicer') {
                   // Load sample and slice it into beats for Slicer mode
                   const slicedSamples = await createSlicedSamples(selectedSample);
-                  sampler = new Tone.Sampler(slicedSamples).toDestination();
+                  sampler = new Tone.Sampler(slicedSamples).chain(filter, delay, reverb).toDestination();
                   currentInstrument = sampler;
                   console.log(`Loaded sample in Slicer mode:`, selectedSample);
               }
@@ -766,11 +766,19 @@
         async function uploadFile(file) {
           const formData = new FormData();
           formData.append('sample', file);
+          
+          // Set up the credentials
+          const username = 'genome';
+          const password = 'future';
+          const credentials = btoa(`${username}:${password}`);
         
           try {
               const response = await fetch('/instrument/upload', {
                   method: 'POST',
-                  body: formData
+                  body: formData,
+                  headers: {
+                    'Authorization': `Basic ${credentials}`
+                  }
               });
           
               if (response.ok) {
@@ -805,7 +813,7 @@
             // Load sample as a chromatic instrument
             sampler = new Tone.Sampler({
               C4: audioBuffer
-            }).toDestination();
+            }).chain(filter, delay, reverb).toDestination();
             currentInstrument = sampler;
             console.log(`Loaded sample in Chromatic mode:`, filePath);
           } else if (currentMode === 'slicer') {
