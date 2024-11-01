@@ -30,13 +30,14 @@
 
     #synth-dropdown {
       width: 100%;
-      padding: 10px;
+      padding: 20px;
       margin: 20px 0;
       font-size: 16px;
       background: #1e1e1e;
       color: #fff;
       border-radius: 6px;
     }
+    
 
     .samples {
       display: flex;
@@ -318,7 +319,7 @@
       <!-- Drop Zone -->
       <input type="file" id="file-input" accept="audio/wav" style="display: none;">
       
-      
+      <div class="drop-zone" id="drop-zone">Drop a wav here</div>
       <h3>Splice Sounds</h3>
       <div class="sample-row" data-sample="SO_RN_perc_water_drop_hall.wav" data-image="https://splice-res.cloudinary.com/image/upload/f_auto,q_auto,w_auto/c_limit,w_450/v1635183099/1635183093.jpg" data-name="SO_RN_perc_water_drop_hall" data-meta="One-Shot • percussion • fx • hip hop">
         <div class="sample-image">
@@ -356,7 +357,6 @@
           <button class="play-button" data-playing="false">►</button>
         </div>
       </div>
-      <div class="drop-zone" id="drop-zone">Drop a wav here</div>
       
       <!-- Synths for testing -->
       <select id="synth-dropdown">
