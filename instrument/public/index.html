@@ -180,9 +180,23 @@
     }
     
     .knob-label {
-      margin-top: 10px; /* Add space between knob and label */
-      font-size: 14px;
+      margin-bottom: : 10px; /* Add space between knob and label */
+      font-size: 12px;
       color: #fff;
+    }
+    
+    .pad-container {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .pad {
+      display: flex;
+      flex-direction: column; /* Stack pad and label vertically */
+      align-items: center; /* Center pad and label horizontally */
+      background: #000;
+      border-radius: 6px;
+      padding: 6px;
     }
 
     .control-panel {
@@ -412,7 +426,7 @@
       </div>
     </div>
 
-    <!-- Effects Knobs Panel -->
+    <!-- Effects Knobs Panel
     <div class="panel">
       <div class="knob-container">
         <div class="knob-wrapper">
@@ -428,8 +442,26 @@
           <label class="knob-label">Filter</label>
         </div>
       </div>
+    </div> -->
+    
+    <div class="panel">
+      <div class="pad-container">
+        <div class="pad">
+          <label class="knob-label">Reverb</label>
+          <div id="reverb-pad"></div>
+        </div>
+        <div class="pad">
+          <label class="knob-label">Delay</label>
+          <div id="delay-pad"></div>
+        </div>
+        <div class="pad">
+          <label class="knob-label">Filter</label>
+          <div id="filter-pad"></div>
+        </div>
+      </div> 
     </div>
-
+    
+    
   </div>
 
   <div id="piano"></div>
@@ -943,54 +975,63 @@
       }
     });
     
-   // Initialize Nexus UI Knobs
-   const reverbKnob = new Nexus.Dial('#reverb-knob', {
-    size: [100, 100],
-     min: 0.001,
-     max: 10,
-     value: 0
+   
+   // Initialize Nexus UI X/Y Pads
+   const reverbPad = new Nexus.Position('#reverb-pad', {
+     size: [120, 90],
+     minX: 0,
+     maxX: 1,    // Wet value range for reverb (0 to 1)
+     minY: 0.001,
+     maxY: 10,   // Decay time range for reverb (0.001 to 10 seconds)
+     value: [0.5, 0.5]
    });
    
-   const delayKnob = new Nexus.Dial('#delay-knob', {
-    size: [100, 100],
-     min: 0,
-     max: 10,
-     value: 0
+   const delayPad = new Nexus.Position('#delay-pad', {
+     size: [120, 90],
+     minX: 0,
+     maxX: 1,    // Wet value range (0 to 1)
+     minY: 0,
+     maxY: 1,   // Delay time range (0 to 10 seconds)
+     value: [0.5, 0.5]
    });
    
-   const filterKnob = new Nexus.Dial('#filter-knob', {
-     size: [100, 100],
-     min: 1,
-     max: 100,
-     value: 0
+   const filterPad = new Nexus.Position('#filter-pad', {
+     size: [120, 90],
+     minX: 20,
+     maxX: 20000, // Frequency range for filter (20Hz to 20,000Hz)
+     minY: 0,
+     maxY: 1,     // Wet value range (0 to 1)
+     value: [500, 0.5]
    });
    
-  reverbKnob.colorize("accent","#333");
-  reverbKnob.colorize("fill","#666");
-  delayKnob.colorize("accent","#333");
-  delayKnob.colorize("fill","#666");
-  filterKnob.colorize("accent","#333");
-  filterKnob.colorize("fill","#666");
-   
-   // Attach Event Listeners to Knobs to Adjust Effects
-   reverbKnob.on('change', (v) => {
-     reverb.decay = v;
-     reverb.wet.value = v / 10; // Wet value is between 0.0 and 1.0
-     console.log(`Reverb set to: ${v}`);
+   // Attach Event Listeners to X/Y Pads to Adjust Effects
+   reverbPad.on('change', (v) => {
+     reverb.wet.value = v.x;  // Wet between 0 and 1
+     reverb.decay = v.y;      // Decay time
+     console.log(`Reverb - Wet: ${v.x}, Decay: ${v.y}`);
    });
    
-   delayKnob.on('change', (v) => {
-     delay.delayTime.value = v / 10; // Adjust to a reasonable range
-     delay.feedback.value = v / 20; // Adjust feedback for delay
-     console.log(`Delay set to: ${v}`);
+   delayPad.on('change', (v) => {
+     delay.delayTime.value = v.y; // Delay time (0 to 10)
+     delay.wet.value = v.x;       // Wet (0 to 1)
+     console.log(`Delay - Time: ${v.y}, Wet: ${v.x}`);
    });
    
-   filterKnob.on('change', (v) => {
-     filter.frequency.value = v * 100; // Frequency between 100 Hz and 10000 Hz
-     console.log(`Filter set to: ${v}`);
+   // Attach Event Listener to Filter Pad to Adjust Frequency and Resonance (Q)
+   filterPad.on('change', (v) => {
+     filter.frequency.value = v.x;  // Frequency (20Hz to 20,000Hz)
+     filter.Q.value = v.y * 10;     // Q factor (0 to 10 for a reasonable range)
+     console.log(`Filter - Frequency: ${v.x}, Q: ${v.y * 10}`);
    });
-
-
+   
+    filterPad.colorize("accent","#FC91D7");
+    filterPad.colorize("fill","rgba(0,0,0,0)");
+    delayPad.colorize("accent","#00CEB2");
+    delayPad.colorize("fill","rgba(0,0,0,0)");
+    reverbPad.colorize("accent","#fff");
+    reverbPad.colorize("fill","rgba(0,0,0,0)");
+   
+   
 
 
 
