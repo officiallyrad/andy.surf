@@ -14,7 +14,7 @@
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #121212;
+      background-color: #131313;
       color: white;
     }
 
@@ -48,21 +48,22 @@
     .samples-left-column {
       flex: 1;
       width:25%;
+      height: auto;
       background-color: #1e1e1e;
       padding: 20px;
       border-radius: 8px;
-      text-align: center;
+      text-align: left;
     }
     
     .selected-sample-image {
-      width: 90%;
+      width: 100%;
       height: auto;
       border-radius: 8px;
     }
     
     .selected-sample-name {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 18px;
       color: #ffffff;
       margin-top: 20px;
       word-wrap: break-word;
@@ -134,34 +135,34 @@
     }
 
     .midi-indicator {
-      top: 10px;
-      right: 10px;
       background-color: rgba(0, 0, 0, 0.7);
       padding: 10px;
+      font-size: 12px;
       border-radius: 8px;
       text-align: left;
+      font-family: "Lucida Console", "Courier New", monospace;
     }
 
     .effects-rack {
       display: flex;
       justify-content: space-between;
-      padding: 10px;
-      background-color: #1e1e1e;
+      padding: 20px 40px;
+      background-color: #121212;
       position: sticky; /* Keeps it pinned to the top of the piano container */
       top: 0;
       z-index: 10; /* Ensure it stays above other elements */
+      filter: drop-shadow(0 2mm 2mm rgba(4, 4, 4, 0.4));
     }
 
     .panel {
-      width: 32%;
-      padding: 20px;
+      padding: 10px;
       background-color: #333;
-      border-radius: 8px;
+      border-radius: 10px;
       box-sizing: border-box;
     }
 
     .drop-zone {
-      border: 2px dashed #888;
+      border: 2px dashed #444;
       padding: 20px;
       text-align: center;
       cursor: pointer;
@@ -195,7 +196,7 @@
       flex-direction: column; /* Stack pad and label vertically */
       align-items: center; /* Center pad and label horizontally */
       background: #000;
-      border-radius: 6px;
+      border-radius: 8px;
       padding: 6px;
     }
 
@@ -226,24 +227,25 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      margin-bottom: 10px;
     }
 
     .toggle {
       display: flex;
-      background-color: #121212;
-      padding: 10px;
       justify-content: center;
     }
 
     .toggle div {
-      margin: 0 15px;
+      margin: 0 10px;
       cursor: pointer;
       padding: 10px;
       border-radius: 5px;
+      background-color: #1e1e1e;
     }
 
     .toggle .active {
-      background-color: #555;
+      background-color: #fff;
+      color: #000;
     }
     
 
@@ -253,10 +255,12 @@
     position: fixed; /* Ensure relative positioning for child elements */
     bottom: 0;
     left: 0;
-    height: 400px; /* Adjusted height to include space for both effects and keys */
+    height: 320px; /* Adjusted height to include space for both effects and keys */
     background-color: #121212;
     display: flex;
     flex-direction: column; /* Arrange children in a column */
+    border-top:1px solid #333;
+    filter: drop-shadow(0 -6mm 4mm rgba(4, 4, 4, 0.4));
   }
   
   
@@ -300,7 +304,7 @@
   }
     
   .slicer-highlight {
-  background-color: rgba(0, 0, 0, 0.414); /* Orange color overlay to indicate slice */
+  background-color: rgba(0, 0, 0, 0.16);
   transition: background-color 0.2s ease;
 }
 
@@ -400,15 +404,15 @@
 
 
  <div class="piano-container">
-   <div class="mode-toggle-container" id="mode-toggle-container">
-     <div class="toggle" id="mode-toggle">
-       <div class="toggle-option active" data-mode="chromatic">Keys</div>
-       <div class="toggle-option" data-mode="slicer">Slicer</div>
-     </div>
-   </div>
   <div class="effects-rack">
  
-    <div class="panel">
+    <div class="panel" style="width:20%;">
+      <div class="mode-toggle-container" id="mode-toggle-container">
+         <div class="toggle" id="mode-toggle">
+           <div class="toggle-option active" data-mode="chromatic">Keys</div>
+           <div class="toggle-option" data-mode="slicer">Slicer</div>
+         </div>
+       </div>
         <div class="midi-indicator">
           <p id="midi-device-status">MIDI: No Device</p>
           <p id="midi-note">Note: --</p>
@@ -416,7 +420,7 @@
     </div>
 
     <!-- Sustain and Mode Panel -->
-    <div class="panel">
+    <div class="panel" style="width:36%;">
       <div id="waveform-container">
         <div id="waveform"></div>
       </div>
@@ -444,7 +448,7 @@
       </div>
     </div> -->
     
-    <div class="panel">
+    <div class="panel" style="width:40%;">
       <div class="pad-container">
         <div class="pad">
           <label class="knob-label">Reverb</label>
@@ -478,7 +482,7 @@
 
     let waveSurfer = WaveSurfer.create({
       container: '#waveform',
-      waveColor: '#888',
+      waveColor: '#fff',
       progressColor: '#00CEB2',
       cursorColor: '#ffffff',
       barWidth: 2,
@@ -489,7 +493,6 @@
     });
 
     
-
 
     // Tone.js context resume
     document.body.addEventListener('click', () => {
